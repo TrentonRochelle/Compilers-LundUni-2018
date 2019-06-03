@@ -1,0 +1,38 @@
+aspect PredefinedFunctions {
+
+	class Printer extends FuncStmt {
+  
+		public Printer() {
+                        super(new IntType(), new IdDecl("print"),
+                                new List<Parameter>( new Parameter( new IntType(), new IdDecl("value")) ), new List<Stmt>() );
+
+                }
+
+		boolean first = true;
+
+
+
+    	}
+
+    	class Reader extends FuncStmt {
+        	public Reader() {
+            		super( new IntType(), new IdDecl( "read"), new List<Parameter>(), new List<Stmt>() );
+        	}
+
+
+		
+  
+  	}
+
+
+	syn nta List<FuncStmt> Program.PredefinedFunctions() {	
+		List<FuncStmt> funcList = new List<FuncStmt>();
+		funcList.add(new Printer());
+		funcList.add(new Reader());
+		return funcList;
+	}
+
+	inh List<FuncStmt> ASTNode.PredefinedFunctions();
+	eq Program.getChild().PredefinedFunctions() = PredefinedFunctions();
+
+}

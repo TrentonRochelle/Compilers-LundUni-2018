@@ -1,0 +1,13 @@
+int main(int a, int b){
+	int d=3;
+	if(a!=b){
+		int d=a;
+		return d;
+	}else{
+		return d;
+	}
+
+b=0;
+return d;
+
+}

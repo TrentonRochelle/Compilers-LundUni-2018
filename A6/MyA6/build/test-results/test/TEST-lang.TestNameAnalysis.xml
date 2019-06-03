@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lang.TestNameAnalysis" tests="4" skipped="0" failures="0" errors="0" timestamp="2017-10-20T21:01:41" hostname="login" time="0.019">
+  <properties/>
+  <testcase name="runTest[decl_error.in]" classname="lang.TestNameAnalysis" time="0.004"/>
+  <testcase name="runTest[test1.in]" classname="lang.TestNameAnalysis" time="0.004"/>
+  <testcase name="runTest[main.in]" classname="lang.TestNameAnalysis" time="0.005"/>
+  <testcase name="runTest[complex.in]" classname="lang.TestNameAnalysis" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

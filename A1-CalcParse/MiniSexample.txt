@@ -1,0 +1,4 @@
+a = 1
+if a then b = 0 fi
+for b = 0 until a = 1
+    do c = 2 od

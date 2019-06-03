@@ -1,0 +1,61 @@
+Program
+  List
+    FuncStmt
+      IntType ID="int"
+      IdDecl ID="calc"
+      List
+        Parameter
+          IntType ID="int"
+          IdDecl ID="a"
+        Parameter
+          IntType ID="int"
+          IdDecl ID="b"
+      List
+        Declare
+          IntType ID="int"
+          IdDecl ID="c"
+          Opt
+            Add
+              IdUse ID="a"
+              IdUse ID="b"
+        Declare
+          IntType ID="int"
+          IdDecl ID="d"
+          Opt
+            Numeral NUMERAL="5"
+        ReturnStmt
+          Mul
+            IdUse ID="c"
+            IdUse ID="d"
+    FuncStmt
+      IntType ID="int"
+      IdDecl ID="main"
+      List
+      List
+        Declare
+          IntType ID="int"
+          IdDecl ID="a"
+          Opt
+            Numeral NUMERAL="1"
+        Declare
+          IntType ID="int"
+          IdDecl ID="b"
+          Opt
+            Numeral NUMERAL="2"
+        FuncCallStmt
+          FuncCall
+            IdUse ID="print"
+            List
+              FuncCall
+                IdUse ID="calc"
+                List
+                  IdUse ID="a"
+                  IdUse ID="b"
+        ReturnStmt
+          Sub
+            FuncCall
+              IdUse ID="calc"
+              List
+                IdUse ID="a"
+                IdUse ID="b"
+            Numeral NUMERAL="15"

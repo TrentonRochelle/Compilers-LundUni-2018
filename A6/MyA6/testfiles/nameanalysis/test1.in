@@ -1,0 +1,21 @@
+int main(int a, int b, int c){
+	return a+b+c;
+}
+
+int test(){
+	int a = 2;
+
+	int sum = main(1,a,3);
+
+	if(sum > 10){
+		return 0;
+	}
+
+	int newSum = sum + 1;
+
+	if(newSum/2 > 4){
+		return sum;
+	}
+
+	return newSum;
+}

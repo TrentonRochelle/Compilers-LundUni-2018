@@ -1,0 +1,6 @@
+int f(){
+	while(a){
+		a=b;
+	}
+	return 0;
+}

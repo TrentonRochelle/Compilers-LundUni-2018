@@ -1,0 +1,11 @@
+int f(int a, int b){
+	print(1);
+	return 2;
+}
+
+int main(){
+	f(1,2);
+	print(2);
+	return 1;
+}
+

@@ -1,0 +1,20 @@
+aspect Visitor {
+	public interface Visitor {
+		public Object visit(List node, Object data);
+		public Object visit(Opt node, Object data);
+		public Object visit(Program node, Object data);
+	}
+
+	public Object ASTNode.accept(Visitor visitor, Object data) {
+		throw new Error("Visitor: accept method not available for " + getClass().getName());
+	}
+	public Object List.accept(Visitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
+	public Object Opt.accept(Visitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
+	public Object Program.accept(Visitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
+}

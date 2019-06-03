@@ -1,0 +1,188 @@
+aspect TypeAnalysis {
+	syn nta IntType Program.IntType() = new IntType("int");
+
+	syn nta BoolType Program.BoolType() = new BoolType("bool");
+
+	syn nta UnknownType Program.unknownType() = new UnknownType("<UnknownType>");
+
+	syn nta UnknownFunc Program.unknownFunc() = new UnknownFunc( unknownType(), new IdDecl("unknownFunc"), new List<Parameter>(),new List<Stmt>());
+
+	inh IntType ASTNode.IntType();
+	
+	eq Program.getChild().IntType() = IntType();	
+
+
+	inh UnknownType ASTNode.unknownType();
+
+	eq Program.getChild().unknownType() = unknownType();
+
+	syn boolean Type.isUnknownType() = false;
+
+	eq UnknownType.isUnknownType() = true;
+
+	syn Type UnknownDecl.type() = unknownType();
+
+	inh BoolType ASTNode.BoolType();
+
+        eq Program.getChild().BoolType() = BoolType();
+
+
+	inh boolean IdDecl.isVariable();		
+	syn boolean IdUse.isVariable() = false;
+	eq Declare.getIdDecl().isVariable() = true;
+	eq FuncStmt.getIdDecl().isVariable() = false;
+	eq Parameter.getIdDecl().isVariable() = true;
+	eq Program.getChild().isVariable() = false;
+	inh boolean IdDecl.isFunction();
+    	inh FuncStmt IdDecl.function();
+	inh UnknownFunc ASTNode.unknownFunc();
+	eq Program.getChild().unknownFunc() = unknownFunc();
+    	syn boolean IdUse.isFunction() = decl().isFunction();
+    	syn FuncStmt IdUse.function() = decl().function();
+    	eq FuncStmt.getIdDecl().function() = this;
+    	eq FuncStmt.getIdDecl().isFunction() = true;
+    	eq Parameter.getIdDecl().function() = unknownFunc();
+    	eq Parameter.getIdDecl().isFunction() = false;
+    	eq Declare.getIdDecl().function() = unknownFunc();
+    	eq Declare.getIdDecl().isFunction() = false;
+    	eq Program.getChild().isFunction() = false;
+    	eq Program.getChild().function() = unknownFunc();
+    	syn boolean UnknownDecl.isFunction() = false;
+    	syn FuncStmt UnknownDecl.function() = unknownFunc();
+    	syn boolean UnknownFunc.isFunction() = true;
+    	syn FuncStmt UnknownFunc.function() = unknownFunc();
+
+	syn Type Type.type() {
+		switch(getID()) {
+           		case "int": return new IntType();
+            		case "bool": return new BoolType();
+        	}
+        	return new UnknownType();
+	}
+    	syn boolean Type.comp(Type toMatch) {
+		if(toString().equals("<UnknownType>")
+		|| toMatch.getID().equals("<UnknownType>") ){
+			return true; //UnknownType compatible with all!
+		}else if(toString().equals(toMatch.toString())){
+			return true; // equal types are compatible!
+		}
+		return false;
+			
+	}
+
+	syn String IntType.toString() = "int";
+    	syn String BoolType.toString() = "bool";
+   	syn String UnknownType.toString() = "<UnknownType>";
+
+   	inh Type IdDecl.expectedType(); 
+
+    	syn Type IdDecl.type() = new IntType();
+
+	eq Program.getChild().expectedType() = new UnknownType();
+
+	eq FuncStmt.getIdDecl().expectedType() = getIdDecl().type();
+	eq Parameter.getIdDecl().expectedType() = getIdDecl().type();
+	eq Declare.getIdDecl().expectedType() = getIdDecl().type();
+	syn Type Expr.type()    = new UnknownType(); 
+
+	eq Equiv.type() = new BoolType();
+	eq NotEquiv.type() = new BoolType();
+	eq MoreThanEquiv.type() = new BoolType();
+    	eq MoreThan.type() = new BoolType();
+    	eq LessThan.type() = new BoolType();
+    	eq LessThanEquiv.type() = new BoolType();
+		
+	eq Add.type() = new IntType();
+	eq Sub.type() = new IntType();
+        eq Div.type() = new IntType();
+        eq Mul.type() = new IntType();
+        eq Mod.type() = new IntType();
+
+
+	eq IdUse.type() = decl().type();
+	eq FuncCall.type() = new IntType();
+	eq Numeral.type() = new IntType();
+
+
+	eq BinExpr.type() { 
+        	if (!getLeft().type().comp(getRight().type())){
+            		return new UnknownType();
+		}
+        	return getLeft().type();
+	}
+
+	inh Type Expr.expectedType();
+
+    	inh boolean Expr.checkComp(Type t);
+
+    	eq AssignDecl.getExpr().checkComp(Type t) = t.comp(getIdUse().decl().type());
+	eq AssignDecl.getIdUse().checkComp(Type t) = true;
+	eq Declare.getExpr().checkComp(Type t) = t.comp(getIdDecl().type());
+	eq WhileStmt.getCond().checkComp(Type t)    = t.comp(new BoolType());
+	eq IfStmt.getCond().checkComp(Type t)       = t.comp(new BoolType());
+    	eq ReturnStmt.getExpr().checkComp(Type t)  = t.comp(new IntType());
+	eq FuncCallStmt.getFuncCall().checkComp(Type t) = true;
+	eq FuncCall.getExpr().checkComp(Type t) = t.comp(expectedType());
+	eq BinExpr.getLeft().checkComp(Type t) {
+	        if (!t.comp(getRight().type())){
+        		return false;
+		}
+	        return t.comp(expectedType());
+    	}
+	eq BinExpr.getRight().checkComp(Type t) {
+        	if (!t.comp(getLeft().type())){
+			return false;
+		}
+        	return t.comp(expectedType());
+    	}
+    	inh Type Stmt.expectedType(); 
+
+    	eq ReturnStmt.getExpr().expectedType() = expectedType();
+    	eq AssignDecl.getExpr().expectedType() = getIdUse().type();
+    	eq Declare.getExpr().expectedType() = getIdDecl().type();
+
+
+    	syn boolean AssignDecl.assignFuncError() = getIdUse().isFunction();
+	syn boolean FuncCall.callVariableError() = !getIdUse().decl().isFunction();			
+
+  	syn boolean Stmt.typeError() = false;
+
+   	syn boolean ReturnStmt.typeError() = !getExpr().type().comp(new IntType());
+    	syn boolean Declare.typeError() {
+		if (!hasExpr()){
+            		return false;
+		}
+        	return !getIdDecl().type().comp(getExpr().type());
+    	}
+    	syn boolean AssignDecl.typeError() = !getIdUse().type().comp(getExpr().type());
+    	syn boolean IfStmt.typeError() = !getCond().type().comp(new BoolType());
+    	syn boolean WhileStmt.typeError() = !getCond().type().comp(new BoolType());
+    	syn boolean FuncStmt.typeError() {
+        	if (!getType().comp(new IntType())){
+			return true;
+		}
+		return false;
+    	}
+
+	syn boolean FuncCallStmt.typeError() {
+		if(getFuncCall().getIdUse().isVariable()){
+			return true;
+		}
+		return false;
+	}
+
+    	syn boolean FuncCall.paramError() = getNumExpr() != getIdUse().function().getNumP();
+
+    	syn boolean FuncCall.paramTypeError() {
+	        FuncStmt func = getIdUse().function();
+        	for(int i = 0; i < getNumExpr(); i++) {
+            		if (!getExpr(i).type().comp(func.getP(i).getIdDecl().type()))
+                		return true;
+        	}
+        	return false;
+    	}
+   	syn boolean BinExpr.typeError() {
+        	return !getLeft().type().comp(getRight().type());
+    	}
+	
+}

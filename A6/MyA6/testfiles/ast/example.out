@@ -1,0 +1,12 @@
+Program
+  List
+    FuncStmt
+      IntType ID="int"
+      IdDecl ID="a"
+      List
+      List
+        AssignDecl
+          IdUse ID="a"
+          IdUse ID="b"
+        ReturnStmt
+          IdUse ID="a"

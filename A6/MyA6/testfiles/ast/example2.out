@@ -1,0 +1,42 @@
+Program
+  List
+    FuncStmt
+      IntType ID="int"
+      IdDecl ID="main"
+      List
+        Parameter
+          IntType ID="int"
+          IdDecl ID="a"
+        Parameter
+          IntType ID="int"
+          IdDecl ID="b"
+      List
+        Declare
+          IntType ID="int"
+          IdDecl ID="d"
+          Opt
+            Numeral NUMERAL="3"
+        IfStmt
+          NotEquiv
+            IdUse ID="a"
+            IdUse ID="b"
+          Block
+            List
+              Declare
+                IntType ID="int"
+                IdDecl ID="d"
+                Opt
+                  IdUse ID="a"
+              ReturnStmt
+                IdUse ID="d"
+          Opt
+            ElseStmt
+              Block
+                List
+                  ReturnStmt
+                    IdUse ID="d"
+        AssignDecl
+          IdUse ID="b"
+          Numeral NUMERAL="0"
+        ReturnStmt
+          IdUse ID="d"

@@ -1,0 +1,26 @@
+Program
+  List
+    FuncStmt
+      IntType ID="int"
+      IdDecl ID="main"
+      List
+        Parameter
+          IntType ID="int"
+          IdDecl ID="a"
+      List
+        IfStmt
+          IdUse ID="a"
+          Block
+            List
+              AssignDecl
+                IdUse ID="a"
+                IdUse ID="b"
+          Opt
+            ElseStmt
+              Block
+                List
+                  AssignDecl
+                    IdUse ID="b"
+                    IdUse ID="a"
+        ReturnStmt
+          Numeral NUMERAL="8"

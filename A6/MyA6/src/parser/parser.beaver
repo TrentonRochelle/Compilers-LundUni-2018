@@ -1,0 +1,157 @@
+%class "LangParser";
+%package "lang.ast";
+
+%embed {:
+	static public class SyntaxError extends RuntimeException { public SyntaxError(String msg) {super(msg);}}
+	// Disable syntax error recovery
+	protected void recoverFromError(Symbol token, TokenStream in) {
+		throw new SyntaxError("Cannot recover from the syntax error");
+	}
+:};
+
+%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT, RETURN, COMMA, BOOL;
+//Structure terminals
+%terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
+
+//Arith terminals
+%terminals ADD, SUB, MUL, DIV, MOD;
+
+//Comparsion terminals
+%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
+
+%typeof program = "Program";
+%typeof funcStmt = "FuncStmt";
+%typeof funcCallStmt = "FuncCallStmt";
+%typeof func_list = "List";
+%typeof stmt = "Stmt";
+%typeof stmt_list = "List";
+%typeof ifStmt = "IfStmt";
+%typeof else = "ElseStmt";
+%typeof whileStmt = "WhileStmt";
+%typeof returnStmt = "ReturnStmt";
+%typeof assign = "AssignDecl";
+%typeof declare = "Declare";
+%typeof expr ="Expr";
+%typeof numeral = "Numeral";
+%typeof idUse = "IdUse";
+%typeof param = "Parameter";
+%typeof param_list = "List";
+%typeof arg_list = "List";
+%typeof funccall = "FuncCall";
+%typeof iddecl = "IdDecl";
+%typeof term = "Expr";
+%typeof factor = "Expr";
+%typeof compare = "Expr";
+%typeof sum = "Expr";
+%typeof type = "Type";
+%typeof block = "Block";
+
+%goal program;
+
+
+
+
+
+program = func_list.a {: return new Program(a); :};
+
+
+funcStmt = type.type iddecl.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  {: return new FuncStmt(type,id,p,t); :};
+
+funccall = idUse.id LPAR arg_list.l RPAR {:return new FuncCall(id,l);:};
+
+funcCallStmt = funccall.a SEMI {:return new FuncCallStmt(a);:};
+
+stmt = ifStmt | whileStmt| declare | assign | returnStmt | funcCallStmt;
+
+
+ifStmt = IF LPAR expr.a RPAR LBRACKET block.t RBRACKET {:return new IfStmt(a,t, new Opt());:}
+	| IF LPAR expr.a RPAR LBRACKET block.t RBRACKET else.e {:return new IfStmt(a,t, new Opt(e));:};
+
+param = type.type iddecl.id {: return new Parameter(type, id); :};
+
+param_list = param.par {: return new List().add(par); :}
+       	 | param_list.a COMMA param.par {: return a.add(par); :}
+       	 | {: return new List();:} /*Returns an empty list i.e no arguments*/
+       	 ;
+
+arg = expr;
+
+type = 
+	INT.t {: return new IntType(t); :}
+	| BOOL.t {: return new BoolType(t); :};
+
+
+arg_list =
+        arg.ar {: return new List().add(ar); :}
+        | arg_list.a COMMA arg.ar {: return a.add(ar); :}
+        | {: return new List();:}
+        ;
+
+
+else=
+	ELSE LBRACKET block.u RBRACKET {:return new ElseStmt(u);:}
+	;
+
+
+whileStmt = WHILE LPAR expr.a RPAR LBRACKET block.t RBRACKET {:return new WhileStmt(a,t);:};
+
+block = stmt_list.sl {: return new Block(sl); :};
+
+declare = type.type iddecl.id SEMI {: return new Declare(type,id, new Opt());:} 
+	| type.type iddecl.id ASSIGN expr.a SEMI {: return new Declare(type,id,new Opt(a));:}
+	;
+
+returnStmt = RETURN expr.a SEMI {: return new ReturnStmt(a);:};
+
+
+assign = idUse.id ASSIGN expr.a SEMI {:return new AssignDecl(id,a);:};
+
+
+stmt_list =
+	stmt.st {: return new List().add(st); :}
+	| stmt_list.a stmt.st {: return a.add(st); :}
+	;
+
+func_list =
+        funcStmt.func {: return new List().add(func); :}
+        | func_list.a funcStmt.func {: return a.add(func); :}
+        ;
+
+
+compare = sum.a EQ sum.b {: return new Equiv(a,b);:}
+        | sum.a NEQ sum.b {: return new NotEquiv(a,b);:}
+        | sum.a GTHN sum.b {: return new MoreThan(a,b);:}
+        | sum.a LTHN sum.b {: return new LessThan(a,b);:}
+        | sum.a GEQ sum.b {: return new MoreThanEquiv(a,b);:}
+        | sum.a LEQ sum.b {:return new LessThan(a,b);:}
+        ;
+
+
+
+expr = sum | compare;
+sum = 
+	sum.a ADD term.b {: return new Add(a, b); :}
+	| sum.a SUB term.b {: return new Sub(a, b); :}
+	| term
+	;
+	
+
+term = 
+	 term.a MUL factor.b {: return new Mul(a, b); :}
+	| term.a DIV factor.b {: return new Div(a, b); :}
+	| term.a MOD factor.b {: return new Mod(a, b); :}
+	| factor
+	;
+	
+factor = numeral
+	| funccall
+	| idUse  
+	;
+
+
+
+numeral = NUMERAL.num {:return new Numeral(num);:};
+
+idUse = ID.id {:return new IdUse(id);:};
+
+iddecl = ID.id {:return new IdDecl(id);:}; 

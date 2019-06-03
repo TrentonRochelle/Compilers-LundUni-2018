@@ -1,0 +1,9 @@
+int main(int a){
+	if(a){
+		a=b;
+	}
+	else{
+		b=a;
+	}
+return 8;
+}

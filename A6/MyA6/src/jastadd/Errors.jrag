@@ -1,0 +1,96 @@
+import java.util.Set;
+import java.util.TreeSet;
+
+aspect Errors {
+	public class ErrorMessage implements Comparable<ErrorMessage> {
+		protected final String message;
+		protected final int lineNumber;
+		public ErrorMessage(String message, int lineNumber) {
+			this.message = message;
+			this.lineNumber = lineNumber;
+		}
+		public int compareTo(ErrorMessage other) {
+			if (lineNumber == other.lineNumber) {
+				return message.compareTo(other.message);
+			}
+			return Integer.compare(lineNumber, other.lineNumber); 
+		}
+		public String toString() {
+			return "Error at line " + lineNumber + ": " + message;
+		}
+	} 
+	protected ErrorMessage ASTNode.error(String message) {
+		return new ErrorMessage(message, getLine(getStart()));
+	}
+
+	coll Set<ErrorMessage> Program.errors() [new TreeSet<ErrorMessage>()] with add root Program;
+
+	inh Program ASTNode.program();
+	eq Program.getChild().program() = this;
+}
+
+
+aspect ErrorContributions {
+	IdUse contributes error("symbol '" + getID() + "' is not declared")
+		when decl().isUnknown()
+		to Program.errors() for program();
+
+	IdDecl contributes error("symbol '" + getID() + "' is already declared!")
+		when isMultiplyDeclared()
+		to Program.errors() for program();
+
+	IdUse contributes error("the definition of symbol '" + getID() + "' is circular")
+		when isCircular()
+		to Program.errors() for program();
+
+	ReturnStmt contributes error("expected type " + expectedType().toString() + " but was " + getExpr().type().toString())
+		when typeError()
+		to Program.errors() for program();
+
+    	AssignDecl contributes error(getIdUse().getID() + " must be assigned of the type " + getIdUse().type().toString() + ", but was " + getExpr().type().toString())
+		when typeError()
+		to Program.errors() for program();
+
+    	AssignDecl contributes error("cannot assign '" + getIdUse().getID() + "' because it is a function!")
+		when assignFuncError()
+		to Program.errors() for program();
+/*
+	FuncCallStmt contributes error("cannot call '" + getFuncCall().getIdUse().getID() + "' because it's a variable!")
+		when callVariableError()
+		to Program.errors() for program();
+*/
+	Declare contributes error("cannot assign '" + getIdDecl().getID() + "' of type " + getIdDecl().type().toString() + ". Received: " + getExpr().type().toString())
+		when typeError()
+		to Program.errors() for program();
+
+    	IfStmt contributes error("If-conditions must be bool!")
+		when typeError()
+		to Program.errors() for program();
+
+    	WhileStmt contributes error("While-conditions must be bool!")
+		when typeError()
+		to Program.errors() for program();
+
+    	BinExpr contributes error("Operands must be same type in binary expressions, but were: " + getLeft().type() + " and " + getRight().type())
+		when typeError()
+		to Program.errors() for program();
+
+    	FuncCallStmt contributes error("cannot call '" + getFuncCall().getIdUse().getID() + "' because it is not a function!")
+		when typeError()
+		to Program.errors() for program();
+
+
+    	FuncCall contributes error("cannot call '" + getIdUse().getID() + "': expected " + getIdUse().function().getNumP() + " arguments, but was " + getNumExpr())
+		when getIdUse().isFunction() && paramError()
+		to Program.errors() for program();
+
+    	FuncCall contributes error("cannot call '" + getIdUse().getID() + "': parameter type mismatch" )
+		when getIdUse().isFunction() && !paramError() && paramTypeError()
+		to Program.errors() for program();
+
+    	FuncCall contributes error("cannot call '" + getIdUse().getID() + "' because it's a variable!")
+		when callVariableError()
+		to Program.errors() for program();
+
+
+}

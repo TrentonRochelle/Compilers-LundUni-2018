@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lang.TestCodeGeneration" tests="14" skipped="0" failures="0" errors="0" timestamp="2017-10-20T21:01:41" hostname="login" time="0.269">
+  <properties/>
+  <testcase name="runTest[add1.in]" classname="lang.TestCodeGeneration" time="0.029"/>
+  <testcase name="runTest[if.in]" classname="lang.TestCodeGeneration" time="0.017"/>
+  <testcase name="runTest[while_0.in]" classname="lang.TestCodeGeneration" time="0.017"/>
+  <testcase name="runTest[mixbin.in]" classname="lang.TestCodeGeneration" time="0.019"/>
+  <testcase name="runTest[else.in]" classname="lang.TestCodeGeneration" time="0.016"/>
+  <testcase name="runTest[declare.in]" classname="lang.TestCodeGeneration" time="0.017"/>
+  <testcase name="runTest[arg_call.in]" classname="lang.TestCodeGeneration" time="0.019"/>
+  <testcase name="runTest[arit.in]" classname="lang.TestCodeGeneration" time="0.018"/>
+  <testcase name="runTest[arg_local.in]" classname="lang.TestCodeGeneration" time="0.019"/>
+  <testcase name="runTest[funccall1.in]" classname="lang.TestCodeGeneration" time="0.02"/>
+  <testcase name="runTest[while.in]" classname="lang.TestCodeGeneration" time="0.02"/>
+  <testcase name="runTest[main.in]" classname="lang.TestCodeGeneration" time="0.019"/>
+  <testcase name="runTest[main2.in]" classname="lang.TestCodeGeneration" time="0.018"/>
+  <testcase name="runTest[add2.in]" classname="lang.TestCodeGeneration" time="0.02"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

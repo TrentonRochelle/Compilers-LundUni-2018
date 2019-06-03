@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lang.ParseTests" tests="9" skipped="0" failures="0" errors="0" timestamp="2017-10-20T21:01:41" hostname="login" time="0.007">
+  <properties/>
+  <testcase name="validSyntaxWhile" classname="lang.ParseTests" time="0.001"/>
+  <testcase name="validSyntaxMethodIf" classname="lang.ParseTests" time="0.001"/>
+  <testcase name="validSyntaxDeclare" classname="lang.ParseTests" time="0.0"/>
+  <testcase name="validSyntaxManyFunc" classname="lang.ParseTests" time="0.001"/>
+  <testcase name="validSyntaxbigtest" classname="lang.ParseTests" time="0.002"/>
+  <testcase name="validSyntaxIfElse" classname="lang.ParseTests" time="0.0"/>
+  <testcase name="validSyntaxManyIf" classname="lang.ParseTests" time="0.001"/>
+  <testcase name="validSyntaxMethod" classname="lang.ParseTests" time="0.0"/>
+  <testcase name="validSyntaxIf" classname="lang.ParseTests" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

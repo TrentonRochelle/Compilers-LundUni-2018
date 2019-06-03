@@ -1,0 +1,5 @@
+let PI = 3.1416 in
+    let r = 1.05 in
+    	r * r * PI
+    end
+end
